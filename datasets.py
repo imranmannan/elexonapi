@@ -1,30 +1,67 @@
-import pandas as pd
+"""elexonapi.datasets
+
+User-facing helpers to inspect and query the in-package dataset registry.
+"""
+
+from __future__ import annotations
+
 from pathlib import Path
-from .registry import build_registry
+from typing import Any
+
+import pandas as pd
 import itables
+
+from .registry import build_registry
 
 DEFAULT_SPEC = Path(__file__).parent / "prod-insol-insights-api.json"
 
-def get_datasets(openapi_path=None):
+def get_datasets(openapi_path: Path | str | None = None) -> pd.DataFrame:
+    """Return the registry as a pandas DataFrame.
+
+    Args:
+        openapi_path: Optional path to an OpenAPI JSON file; defaults to the bundled spec.
+    """
     path = openapi_path or DEFAULT_SPEC
-    return  pd.DataFrame(build_registry(path))
+    return pd.DataFrame(build_registry(path))
 
-datasets = get_datasets()
+datasets: pd.DataFrame = get_datasets()
 
-operation_aliases = datasets[['operation','name','code']].to_records()
+# Simple record array of (index, operation, name, code) for alias resolution
+operation_aliases = datasets[["operation", "name", "code"]].to_records()
 
-def get_operation_from_alias(alias, operation_aliases=operation_aliases):
+def get_operation_from_alias(alias: str, operation_aliases=operation_aliases) -> str:
+    """Resolve an alias to the canonical `operation` identifier.
+
+    The alias can be any of the `operation`, `name` or `code` fields. If the
+    alias is not found a `ValueError` is raised describing the problem.
+    """
     for alias_list in operation_aliases:
+        # `alias_list` is a record where fields are (index, operation, name, code)
         if alias in alias_list:
+            # operation is the second item in the record (index is first)
             return alias_list[1]
-    
-    raise ValueError(f'{alias} not in alias list.')
 
-def browse(datasets=datasets):
-    return itables.show(datasets, classes = 'display compact',columnDefs=[{"className": "dt-left", "targets": "_all"}])
+    raise ValueError(
+        f"Alias '{alias}' not found. Provide the operation id, name, or code. "
+        "See `elexonapi.datasets.datasets` for a list of valid dataset aliases."
+    )
 
-def help(alias, datasets=datasets):
+def browse(datasets: pd.DataFrame = datasets) -> Any:
+    """Display an interactive table of datasets using `itables`.
+
+    Intended for use inside Jupyter notebooks to quickly inspect available
+    datasets and their required parameters.
+    """
+    return itables.show(datasets, classes="display compact", columnDefs=[{"className": "dt-left", "targets": "_all"}])
+
+
+def help(alias: str, datasets: pd.DataFrame = datasets) -> dict[str, Any]:
+    """Print and return the metadata dictionary for a dataset alias.
+
+    Returns the same dictionary stored inside the registry produced by
+    `build_registry`.
+    """
     operation = get_operation_from_alias(alias)
     ds = datasets[datasets["operation"] == operation].iloc[0].to_dict()
-    print(ds['description'])
+    print(ds["description"])
     return ds
