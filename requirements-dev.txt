@@ -1,3 +1,9 @@
 pytest>=7.0.0
 mypy>=1.0.0
 flake8>=6.0.0
+
+# Static typing stubs for mypy to check third-party libraries used by the
+# project (install in dev environment only).
+pandas-stubs>=1.2.0
+types-requests>=2.28.0
+types-tqdm>=4.65.0

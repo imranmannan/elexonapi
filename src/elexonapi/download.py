@@ -195,7 +195,7 @@ def request_with_retry(
 
 def split_list_param(values: List[Any], max_len: int) -> Iterable[List[Any]]:
     for i in range(0, len(values), max_len):
-        yield values[i : i + max_len]
+        yield values[i: i + max_len]
 
 
 def datetime_chunks(

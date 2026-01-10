@@ -98,12 +98,18 @@ def load_openapi(path: Path | str) -> Dict[str, Any]:
 
 
 def extract_name_and_code(summary: Optional[str]) -> Tuple[str, Optional[str]]:
-    match = CODE_RE.search(summary or "")
+    """Extract a user-friendly name and code from an OpenAPI summary.
+
+    The input ``summary`` may be ``None`` so coerce it to a string before
+    running regex and string operations to satisfy static type checkers.
+    """
+    summary_str = summary or ""
+    match = CODE_RE.search(summary_str)
     code = match.group(1) if match else None
     if code:
-        name = summary.replace(f"({code})", "").strip()
+        name = summary_str.replace(f"({code})", "").strip()
     else:
-        name = summary or ""
+        name = summary_str
     return name, code
 
 
