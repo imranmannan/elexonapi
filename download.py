@@ -184,7 +184,6 @@ def get_date_chunk_cols(params, date_chunk_cols=None) -> list[str]:
     if len(time_cols) == 1 and len(date_cols) == 0:
         return [time_cols[0]]
 
-    # if len(from_cols) > 1 or len(to_cols)  > 1 or len(date_cols) > 1 or len(time_cols)  > 1 :
     else:
         raise ValueError(
             f"Multiple possible datetime columns to chunk on: "
@@ -210,8 +209,15 @@ def return_response(response, format):
 
     assert format in ('df','json'),'format must be one of: format="df" or format="json"'
 
+    json_response = json.loads(response.content)
+
     if format == 'df':
-        return pd.DataFrame(json.loads(response.content).get('data', json.loads(response.content)))
+        return pd.DataFrame(json_response.get('data', json_response))
     
+    # check if a dict
+    elif isinstance(json_response, dict):
+        return json_response.get('data', json_response)
+
+    # anything else, return the straight json
     else:
-        return json.loads(response.content).get('data', json.loads(response.content))
+        return json_response
