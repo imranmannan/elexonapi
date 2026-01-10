@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2026-01-11
+### Fixed
+- Fix: Corrected output determination from the API specification — the client now correctly maps outputs to the spec-defined types and determines output behaviour.
+
 ## [0.1.2] - 2026-01-10
 ### Added
 - Automatically create a GitHub Release from the publish workflow and attach distribution artifacts.
