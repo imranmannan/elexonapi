@@ -9,8 +9,6 @@ Lightweight Python client for the Elexon BMRS Insights API.
 - Retry & rate-limit handling
 
 ### to do:
-    - sort out max days
-    - sort out ordering / filtering
     - write a proper readme and get production ready
     - push to PyPI
 

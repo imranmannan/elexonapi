@@ -46,8 +46,10 @@ def build_registry(openapi_path):
         else:
             output_format = 'json'
         
+        description = get.get("description", "").replace('\n',' ')
 
-
+        
+    
 
         datasets.append({
             "name": name,
@@ -55,7 +57,7 @@ def build_registry(openapi_path):
             'operation': operation,
             "category": category,
             "subcategory": subcategory,
-            "description": get.get("description", ""),
+            "description": description,
             "path": path,
             "required_cols": required,
             "optional_cols": optional,
@@ -72,6 +74,7 @@ def build_registry(openapi_path):
 def extract_max_days(description):
     if not description:
         return None
+    
     m = MAX_DAYS_RE.search(description)
     return int(m.group(1)) if m else None
 
