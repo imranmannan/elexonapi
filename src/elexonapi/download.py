@@ -228,6 +228,7 @@ def datetime_chunks(
 
     return chunks
 
+
 def get_date_chunk_cols(
     params: Dict[str, Any],
     date_chunk_cols: Optional[List[str]] = None,

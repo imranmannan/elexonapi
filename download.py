@@ -228,7 +228,6 @@ def request_with_retry(
                 }
             )
 
-
     if last is not None:
         last.raise_for_status()
 
