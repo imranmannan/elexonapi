@@ -14,7 +14,6 @@ import time
 
 import pandas as pd
 import requests
-import sys
 from typing import Any as _Any
 
 from .datasets import (
@@ -24,14 +23,19 @@ from .datasets import (
     help as help_fn,
 )
 
-# Use a runtime check for notebook vs terminal tqdm, but expose a single
-# name typed as ``Any`` so mypy does not complain about differing types.
-if "ipykernel" in sys.modules:
-    from tqdm.notebook import tqdm as _tqdm
-else:
-    from tqdm import tqdm as _tqdm
+# Import tqdm dynamically via importlib so the type is not inferred as
+# two different concrete types (``tqdm`` vs ``tqdm.notebook``) during
+# static analysis.
+from importlib import import_module
 
-# Give ``tqdm`` a stable, non-specific type for static typing tools
+try:
+    _mod = import_module("tqdm.notebook")
+    _tqdm = getattr(_mod, "tqdm")
+except Exception:
+    _mod = import_module("tqdm")
+    _tqdm = getattr(_mod, "tqdm")
+
+# Expose a single name and avoid a strict type for mypy
 tqdm: _Any = _tqdm
 
 
@@ -47,7 +51,9 @@ class ElexonClient:
     ) -> None:
         self.base_url = base_url
         self.session = session or requests.Session()
-        self._datasets = datasets if datasets is not None else _default_datasets
+        self._datasets = (
+            datasets if datasets is not None else _default_datasets
+        )
 
     @property
     def datasets(self) -> pd.DataFrame:
@@ -60,8 +66,12 @@ class ElexonClient:
         return help_fn(alias, datasets=self._datasets)
 
     def _resolve_operation(self, alias: str) -> str:
-        operation_aliases = self._datasets[["operation", "name", "code"]].to_records()
-        return get_operation_from_alias(alias, operation_aliases=operation_aliases)
+        operation_aliases = self._datasets[
+            ["operation", "name", "code"]
+        ].to_records()
+        return get_operation_from_alias(
+            alias, operation_aliases=operation_aliases
+        )
 
     def download(
         self,

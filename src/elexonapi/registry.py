@@ -48,7 +48,9 @@ def build_registry(openapi_path: Path | str) -> List[Dict[str, Any]]:
 
         code = re.sub(r"\s*,\s*", "_", code)
 
-        example_response = extract_response_structure(get.get("responses", {}))
+        example_response = extract_response_structure(
+            get.get("responses", {})
+        )
 
         # Heuristic: if the example response is a mapping (or a mapping
         # of mappings), this endpoint likely supports a dataframe-like
@@ -97,7 +99,9 @@ def load_openapi(path: Path | str) -> Dict[str, Any]:
         return json.load(f)
 
 
-def extract_name_and_code(summary: Optional[str]) -> Tuple[str, Optional[str]]:
+def extract_name_and_code(
+    summary: Optional[str],
+) -> Tuple[str, Optional[str]]:
     """Extract a user-friendly name and code from an OpenAPI summary.
 
     The input ``summary`` may be ``None`` so coerce it to a string before
