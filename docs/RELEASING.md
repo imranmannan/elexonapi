@@ -50,6 +50,28 @@ GitHub Actions to publish automatically.
 
 2. Add a workflow that builds and publishes when a tag `v*.*.*` is pushed. See `.github/workflows/publish.yml`.
 
+## Creating a GitHub Release from CHANGELOG (optional helper)
+
+A convenience script is provided to create a GitHub Release from the `CHANGELOG.md` entry for a version tag and upload distribution artifacts.
+
+Usage:
+
+```bash
+# ensure you have gh (GitHub CLI) installed and authenticated
+# create a tag locally, push it to origin (if you haven't already):
+# git tag v0.1.1 && git push origin v0.1.1
+
+# then run:
+./scripts/create_release.sh v0.1.1
+```
+
+The script will:
+- extract the `## [0.1.1]` section from `CHANGELOG.md` into `release-notes-0.1.1.md`
+- build source and wheel distributions (python -m build)
+- create the GitHub Release and upload the `dist/*` artifacts
+
+If `gh` is not installed you'll need to install and authenticate it first: https://cli.github.com/
+
 ## Notes
 - Use `__token__` as the username when uploading with twine and provide the token as the password.
 - Consider publishing to TestPyPI first to validate distribution behaviour.
