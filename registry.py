@@ -170,9 +170,9 @@ def extract_response_structure(responses: Dict[str, Any]) -> Any:
     object is returned.
     """
     example = responses.get("200", {})
-        content = example.get("content", {})
-        app_json = content.get("application/json", {})
-        example = app_json.get("example", {})
+    content = example.get("content", {})
+    app_json = content.get("application/json", {})
+    example = app_json.get("example", {})
     if isinstance(example, dict):
         return example.get("data", example)
 
