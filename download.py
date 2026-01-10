@@ -99,7 +99,6 @@ class ElexonClient:
         if format not in ("df", "json"):
             raise ValueError('format must be "df" or "json"')
 
-
         operation = self._resolve_operation(alias)
         ds = (
             self._datasets[self._datasets["operation"] == operation]
@@ -258,10 +257,6 @@ def datetime_chunks(
         chunks.append((cur, nxt))
         cur = nxt
 
-    return chunks
-
-
-def get_date_chunk_cols(
     params: Dict[str, Any],
     date_chunk_cols: Optional[List[str]] = None,
 ) -> List[str]:

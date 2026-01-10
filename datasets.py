@@ -15,6 +15,7 @@ from .registry import build_registry
 
 DEFAULT_SPEC = Path(__file__).parent / "prod-insol-insights-api.json"
 
+
 def get_datasets(openapi_path: Path | str | None = None) -> pd.DataFrame:
     """Return the registry as a pandas DataFrame.
 
@@ -24,10 +25,12 @@ def get_datasets(openapi_path: Path | str | None = None) -> pd.DataFrame:
     path = openapi_path or DEFAULT_SPEC
     return pd.DataFrame(build_registry(path))
 
+
 datasets: pd.DataFrame = get_datasets()
 
 # Simple record array of (index, operation, name, code) for alias resolution
 operation_aliases = datasets[["operation", "name", "code"]].to_records()
+
 
 def get_operation_from_alias(
     alias: str,

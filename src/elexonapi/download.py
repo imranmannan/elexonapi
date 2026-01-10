@@ -256,12 +256,14 @@ def get_date_chunk_cols(
     if len(time_cols) == 1 and len(date_cols) == 0:
         return [time_cols[0]]
 
-    raise ValueError("Multiple possible datetime columns to chunk on: "\
-                     f"from={from_cols}, to={to_cols}, "
-                     f"date={date_cols}, time={time_cols}. "
-                     "Please specify date_chunk_cols=[...] explicitly."
+    raise ValueError(
+        (
+            "Multiple possible datetime columns to chunk on: "
+            f"from={from_cols}, to={to_cols}, "
+            f"date={date_cols}, time={time_cols}. "
+            "Please specify date_chunk_cols=[...] explicitly."
+        )
     )
-    
 
 
 def maybe_tqdm(
