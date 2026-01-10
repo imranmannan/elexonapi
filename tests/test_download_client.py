@@ -20,6 +20,7 @@ def test_get_operation_from_alias():
 
 def test_validate_params_missing():
     from elexonapi.download import validate_params
+
     # craft a minimal dataset metadata with required cols
     ds = {"required_cols": ["a", "b"], "optional_cols": ["c"]}
     with pytest.raises(ValueError, match="Missing required parameters"):
@@ -28,6 +29,7 @@ def test_validate_params_missing():
 
 def test_get_date_chunk_cols():
     from elexonapi.download import get_date_chunk_cols
+
     # No date keys
     assert get_date_chunk_cols({}) == []
     # explicit from/to
@@ -39,9 +41,11 @@ def test_get_date_chunk_cols():
 # More tests (e.g., chunking behaviour) would normally mock requests.Session
 # Here we check datetime_chunks behaviour
 
+
 def test_datetime_chunks():
     from elexonapi.download import datetime_chunks
     import pandas as pd
+
     start = pd.to_datetime("2023-01-01")
     end = pd.to_datetime("2023-01-10")
     chunks = datetime_chunks(start, end, 3)

@@ -44,7 +44,8 @@ def get_operation_from_alias(
             "Alias %r not found. Provide the operation id, name, or code. "
             "Run `ElexonClient().datasets` to list datasets, or see the "
             "`elexonapi.datasets.datasets` object for details."
-        ) % (alias,)
+        )
+        % (alias,)
     )
 
 

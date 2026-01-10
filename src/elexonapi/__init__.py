@@ -9,6 +9,7 @@ from .datasets import datasets, browse, help
 from .download import ElexonClient
 
 import warnings
+
 _warn_msg = (
     "elexonapi: Use `_from` instead of the Python reserved word "
     "`from` when supplying date ranges."

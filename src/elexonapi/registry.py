@@ -63,21 +63,23 @@ def build_registry(openapi_path: Path | str) -> List[Dict[str, Any]]:
 
         description = get.get("description", "").replace("\n", " ")
 
-        datasets.append({
-            "name": name,
-            "code": code,
-            "operation": operation,
-            "category": category,
-            "subcategory": subcategory,
-            "description": description,
-            "path": path,
-            "required_cols": required,
-            "optional_cols": optional,
-            "datetime_cols": datetime_cols,
-            "max_days_data_limit_in_raw_query": max_days,
-            "example_response": example_response,
-            "output_format": output_format,
-        })
+        datasets.append(
+            {
+                "name": name,
+                "code": code,
+                "operation": operation,
+                "category": category,
+                "subcategory": subcategory,
+                "description": description,
+                "path": path,
+                "required_cols": required,
+                "optional_cols": optional,
+                "datetime_cols": datetime_cols,
+                "max_days_data_limit_in_raw_query": max_days,
+                "example_response": example_response,
+                "output_format": output_format,
+            }
+        )
 
     return datasets
 

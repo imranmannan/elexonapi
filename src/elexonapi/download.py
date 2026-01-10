@@ -41,9 +41,7 @@ class ElexonClient:
     ) -> None:
         self.base_url = base_url
         self.session = session or requests.Session()
-        self._datasets = (
-            datasets if datasets is not None else _default_datasets
-        )
+        self._datasets = datasets if datasets is not None else _default_datasets
 
     @property
     def datasets(self) -> pd.DataFrame:
@@ -56,12 +54,8 @@ class ElexonClient:
         return help_fn(alias, datasets=self._datasets)
 
     def _resolve_operation(self, alias: str) -> str:
-        operation_aliases = self._datasets[
-            ["operation", "name", "code"]
-        ].to_records()
-        return get_operation_from_alias(
-            alias, operation_aliases=operation_aliases
-        )
+        operation_aliases = self._datasets[["operation", "name", "code"]].to_records()
+        return get_operation_from_alias(alias, operation_aliases=operation_aliases)
 
     def download(
         self,
@@ -76,11 +70,7 @@ class ElexonClient:
             raise ValueError('format must be "df" or "json"')
 
         operation = self._resolve_operation(alias)
-        ds = (
-            self._datasets[self._datasets["operation"] == operation]
-            .iloc[0]
-            .to_dict()
-        )
+        ds = self._datasets[self._datasets["operation"] == operation].iloc[0].to_dict()
 
         if "_from" in params:
             params = {**{"from": params.pop("_from")}, **params}
@@ -156,9 +146,8 @@ def validate_params(dataset: Dict[str, Any], params: Dict[str, Any]) -> None:
         raise ValueError(f"Missing required parameters: {sorted(missing)}")
     if extra:
         raise ValueError(
-            (
-                "Unknown parameters: %r. Allowed inputs are: %r"
-            ) % (sorted(extra), sorted(allowed))
+            ("Unknown parameters: %r. Allowed inputs are: %r")
+            % (sorted(extra), sorted(allowed))
         )
 
 
@@ -206,7 +195,7 @@ def request_with_retry(
 
 def split_list_param(values: List[Any], max_len: int) -> Iterable[List[Any]]:
     for i in range(0, len(values), max_len):
-        yield values[i:i + max_len]
+        yield values[i : i + max_len]
 
 
 def datetime_chunks(
