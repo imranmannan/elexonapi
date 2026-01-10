@@ -11,5 +11,5 @@ from .download import ElexonClient
 import warnings
 warnings.warn("elexonapi: Use `_from` instead of the Python reserved word `from` when supplying date ranges.", stacklevel=2)
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __all__ = ["datasets", "browse", "help", "ElexonClient", "__version__"]
