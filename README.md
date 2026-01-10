@@ -14,17 +14,13 @@ Key differentiators:
 
 ## Quick install
 
-- Install from source:
-
-```bash
-pip install -e .
-```
-
-- Or install from PyPI (when published):
+Install the latest release from PyPI:
 
 ```bash
 pip install elexonapi
 ```
+
+If you need the development version and want to run the package locally, see the **Local development** section below (we recommend using `uv` to manage and sync project dependencies locally).
 
 ---
 
@@ -128,8 +124,35 @@ return pandas.DataFrame (format="df") or JSON (format="json")
 
 - Please open an issue or PR for inconsistencies or improvements.
 - The package is fully typed and documented to make maintenance easier.
+---
+
+## Local development (using `uv`) 🧰
+
+If you want to run the project locally (tests, linting, or editable installs) use `uv` to add dev dependencies and sync the project into an active environment.
+
+```bash
+# add development tooling
+uv add --dev pytest mypy flake8
+
+# sync/install into the active virtual environment
+uv sync --active
+
+# If you prefer pip to install the current project in editable mode
+# (useful if you have an editable layout), run:
+uv pip install -e .
+
+# run tests
+pytest -q
+```
+
+> Note: The project is published on PyPI and the recommended install for users is via `pip install elexonapi`.
 
 ---
+
+## Publishing to PyPI 
+
+Follow the steps in `docs/RELEASING.md` to publish manually; the repository includes a GitHub Actions workflow (`.github/workflows/publish.yml`) that publishes on pushing a `vX.Y.Z` tag when the workflow has access to a `PYPI_API_TOKEN` secret.
+
 
 ## License
 
