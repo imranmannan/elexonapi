@@ -9,9 +9,11 @@ Lightweight Python client for the Elexon BMRS Insights API.
 - Retry & rate-limit handling
 
 ### to do:
+    - sort out max days
+    - sort out ordering / filtering
+    - write a proper readme and get production ready
+    - push to PyPI
 
-- implement chunking by date for known max
-    - allow user to set date_chunk cols if ambiguous
 
 ### maybe:
 - add timezones to input (and output?)
