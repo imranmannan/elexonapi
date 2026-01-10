@@ -37,3 +37,12 @@ jobs:
           python -m pip install --upgrade pip build twine
           python -m build
           python -m twine upload dist/* -u __token__ -p "$TWINE_PASSWORD"
+
+      - name: Create GitHub Release and attach artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: elexonapi ${{ github.ref_name }}
+          files: dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
