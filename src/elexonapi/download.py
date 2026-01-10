@@ -75,7 +75,6 @@ class ElexonClient:
         if format not in ("df", "json"):
             raise ValueError('format must be "df" or "json"')
 
-
         operation = self._resolve_operation(alias)
         ds = (
             self._datasets[self._datasets["operation"] == operation]
@@ -198,7 +197,6 @@ def request_with_retry(
                     "error": error_payload,
                 }
             )
-
 
     if last is not None:
         last.raise_for_status()
