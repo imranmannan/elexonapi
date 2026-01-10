@@ -59,6 +59,8 @@ def browse(datasets: pd.DataFrame = datasets) -> Any:
 
 def help(alias: str, datasets: pd.DataFrame = datasets) -> dict[str, Any]:
     operation = get_operation_from_alias(alias)
-    ds = datasets[datasets["operation"] == operation].iloc[0].to_dict()
+    ds_raw = datasets[datasets["operation"] == operation].iloc[0].to_dict()
+    # Ensure the resulting dict has `str` keys for accurate typing with mypy
+    ds: dict[str, Any] = {str(k): v for k, v in ds_raw.items()}
     print(ds["description"])
     return ds

@@ -15,6 +15,7 @@ import time
 import pandas as pd
 import requests
 import sys
+from typing import Any as _Any
 
 from .datasets import (
     datasets as _default_datasets,
@@ -23,10 +24,15 @@ from .datasets import (
     help as help_fn,
 )
 
+# Use a runtime check for notebook vs terminal tqdm, but expose a single
+# name typed as ``Any`` so mypy does not complain about differing types.
 if "ipykernel" in sys.modules:
-    from tqdm.notebook import tqdm
+    from tqdm.notebook import tqdm as _tqdm
 else:
-    from tqdm import tqdm
+    from tqdm import tqdm as _tqdm
+
+# Give ``tqdm`` a stable, non-specific type for static typing tools
+tqdm: _Any = _tqdm
 
 
 BASE_URL = "https://data.elexon.co.uk/bmrs/api/v1"
@@ -70,7 +76,13 @@ class ElexonClient:
             raise ValueError('format must be "df" or "json"')
 
         operation = self._resolve_operation(alias)
-        ds = self._datasets[self._datasets["operation"] == operation].iloc[0].to_dict()
+        ds_raw = (
+            self._datasets[self._datasets["operation"] == operation]
+            .iloc[0]
+            .to_dict()
+        )
+        # Ensure dict keys are `str` for mypy compatibility
+        ds: dict[str, Any] = {str(k): v for k, v in ds_raw.items()}
 
         if "_from" in params:
             params = {**{"from": params.pop("_from")}, **params}
