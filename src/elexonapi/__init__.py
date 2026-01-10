@@ -16,5 +16,5 @@ _warn_msg = (
 )
 warnings.warn(_warn_msg, stacklevel=2)
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __all__ = ["datasets", "browse", "help", "ElexonClient", "__version__"]
