@@ -18,6 +18,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install uv
           uv sync --active
+          # Install dev dependencies so test tooling (pytest, mypy, etc.) is available
+          python -m pip install -r requirements-dev.txt
       - name: Run tests
         run: |
           pytest -q
