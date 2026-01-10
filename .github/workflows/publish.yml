@@ -13,16 +13,13 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - name: Install uv and sync
+      - name: Install dev dependencies with pip
         run: |
           python -m pip install --upgrade pip
-          pip install uv
-          uv sync --active
-          # Install dev dependencies so test tooling (pytest, mypy, etc.) is available
           python -m pip install -r requirements-dev.txt
       - name: Run tests
         run: |
-          uv run pytest -q
+          python -m pytest -q
 
   publish:
     needs: test
