@@ -48,16 +48,16 @@ def build_registry(openapi_path: Path | str) -> List[Dict[str, Any]]:
 
         code = re.sub(r"\s*,\s*", "_", code)
 
-        example_response = extract_response_structure(
-            get.get("responses", {})
-        )
+        example_response = extract_response_structure(get.get("responses", {}))
 
         # Heuristic: if the example response is a mapping (or a mapping
         # of mappings), this endpoint likely supports a dataframe-like
         # output when converted.
-        if isinstance(example_response, dict) and (
-            not example_response
-            or isinstance(next(iter(example_response.values()), None), dict)
+        if (
+            not isinstance(example_response, str)
+            and len(example_response) > 0
+            and (isinstance(example_response, dict))
+            or isinstance(next(iter(example_response), None), dict)
         ):
             output_format = "json or dataframe"
         else:
