@@ -36,7 +36,9 @@ def build_registry(openapi_path: Path | str) -> List[Dict[str, Any]]:
         category = path_split[1]
         subcategory = path_split[2] if len(path_split) > 2 else None
 
-        required, optional, datetime_cols = extract_parameters(get.get("parameters", []))
+        required, optional, datetime_cols = extract_parameters(
+            get.get("parameters", []),
+        )
         max_days = extract_max_days(get.get("description", ""))
 
         operation = get.get("operationId", "")
@@ -48,7 +50,13 @@ def build_registry(openapi_path: Path | str) -> List[Dict[str, Any]]:
 
         example_response = extract_response_structure(get.get("responses", {}))
 
-        if isinstance(example_response, dict):
+        # Heuristic: if the example response is a mapping (or a mapping
+        # of mappings), this endpoint likely supports a dataframe-like
+        # output when converted.
+        if isinstance(example_response, dict) and (
+            not example_response
+            or isinstance(next(iter(example_response.values()), None), dict)
+        ):
             output_format = "json or dataframe"
         else:
             output_format = "json"
@@ -90,11 +98,16 @@ def load_openapi(path: Path | str) -> Dict[str, Any]:
 def extract_name_and_code(summary: Optional[str]) -> Tuple[str, Optional[str]]:
     match = CODE_RE.search(summary or "")
     code = match.group(1) if match else None
-    name = summary.replace(f"({code})", "").strip() if code else (summary or "")
+    if code:
+        name = summary.replace(f"({code})", "").strip()
+    else:
+        name = summary or ""
     return name, code
 
 
-def extract_parameters(params: List[Dict[str, Any]]) -> Tuple[List[str], List[str], List[str]]:
+def extract_parameters(
+    params: List[Dict[str, Any]],
+) -> Tuple[List[str], List[str], List[str]]:
     required: List[str] = []
     optional: List[str] = []
     datetime_cols: List[str] = []
@@ -113,7 +126,10 @@ def extract_parameters(params: List[Dict[str, Any]]) -> Tuple[List[str], List[st
 
 
 def extract_response_structure(responses: Dict[str, Any]) -> Any:
-    example = responses.get("200", {}).get("content", {}).get("application/json", {}).get("example", {})
+    example = responses.get("200", {})
+    content = example.get("content", {})
+    app_json = content.get("application/json", {})
+    example = app_json.get("example", {})
 
     if isinstance(example, dict):
         return example.get("data", example)

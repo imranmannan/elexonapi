@@ -16,7 +16,12 @@ import pandas as pd
 import requests
 import sys
 
-from .datasets import datasets as _default_datasets, get_operation_from_alias, browse as browse_fn, help as help_fn
+from .datasets import (
+    datasets as _default_datasets,
+    get_operation_from_alias,
+    browse as browse_fn,
+    help as help_fn,
+)
 
 if "ipykernel" in sys.modules:
     from tqdm.notebook import tqdm
@@ -28,10 +33,17 @@ BASE_URL = "https://data.elexon.co.uk/bmrs/api/v1"
 
 
 class ElexonClient:
-    def __init__(self, base_url: str = BASE_URL, session: Optional[requests.Session] = None, datasets: Optional[pd.DataFrame] = None) -> None:
+    def __init__(
+        self,
+        base_url: str = BASE_URL,
+        session: Optional[requests.Session] = None,
+        datasets: Optional[pd.DataFrame] = None,
+    ) -> None:
         self.base_url = base_url
         self.session = session or requests.Session()
-        self._datasets = datasets if datasets is not None else _default_datasets
+        self._datasets = (
+            datasets if datasets is not None else _default_datasets
+        )
 
     @property
     def datasets(self) -> pd.DataFrame:
@@ -44,15 +56,32 @@ class ElexonClient:
         return help_fn(alias, datasets=self._datasets)
 
     def _resolve_operation(self, alias: str) -> str:
-        operation_aliases = self._datasets[["operation", "name", "code"]].to_records()
-        return get_operation_from_alias(alias, operation_aliases=operation_aliases)
+        operation_aliases = self._datasets[
+            ["operation", "name", "code"]
+        ].to_records()
+        return get_operation_from_alias(
+            alias, operation_aliases=operation_aliases
+        )
 
-    def download(self, alias: str, *, progress: bool = True, format: str = "df", date_chunk_cols: Optional[List[str]] = None, **params: Any) -> Any:
+    def download(
+        self,
+        alias: str,
+        *,
+        progress: bool = True,
+        format: str = "df",
+        date_chunk_cols: Optional[List[str]] = None,
+        **params: Any,
+    ) -> Any:
         if format not in ("df", "json"):
-            raise ValueError('format must be one of: format="df" or format="json"')
+            raise ValueError('format must be "df" or "json"')
+
 
         operation = self._resolve_operation(alias)
-        ds = self._datasets[self._datasets["operation"] == operation].iloc[0].to_dict()
+        ds = (
+            self._datasets[self._datasets["operation"] == operation]
+            .iloc[0]
+            .to_dict()
+        )
 
         if "_from" in params:
             params = {**{"from": params.pop("_from")}, **params}
@@ -63,7 +92,10 @@ class ElexonClient:
 
         output_format = ds.get("output_format", "")
         if format == "df" and "dataframe" not in output_format:
-            raise ValueError('This dataset does not support format="df". Use format="json" to retrieve the raw data.')
+            raise ValueError(
+                'This dataset does not support format="df". '
+                'Use format="json" to retrieve the raw data.'
+            )
 
         dt_cols = get_date_chunk_cols(params, date_chunk_cols)
         max_day_chunksize = ds.get("_max_days", 1)
@@ -74,6 +106,7 @@ class ElexonClient:
             return return_response(r, format)
 
         if len(dt_cols) == 2:
+
             def fetch(p: Dict[str, Any]) -> List[Dict[str, Any]]:
                 r = request_with_retry(self.session, url, p)
                 return json.loads(r.content)["data"]
@@ -97,6 +130,7 @@ class ElexonClient:
 
         if len(dt_cols) == 1:
             dt_col = dt_cols[0]
+
             def fetch(p: Dict[str, Any]) -> List[Dict[str, Any]]:
                 r = request_with_retry(self.session, url, p)
                 return json.loads(r.content)["data"]
@@ -122,10 +156,19 @@ def validate_params(dataset: Dict[str, Any], params: Dict[str, Any]) -> None:
     if missing:
         raise ValueError(f"Missing required parameters: {sorted(missing)}")
     if extra:
-        raise ValueError(f"Unknown parameters: {sorted(extra)}. Allowed inputs are: {sorted(allowed)}")
+        raise ValueError(
+            (
+                "Unknown parameters: %r. Allowed inputs are: %r"
+            ) % (sorted(extra), sorted(allowed))
+        )
 
 
-def request_with_retry(session: requests.Session, url: str, params: Dict[str, Any], retries: int = 5) -> requests.Response:
+def request_with_retry(
+    session: requests.Session,
+    url: str,
+    params: Dict[str, Any],
+    retries: int = 5,
+) -> requests.Response:
     last: Optional[requests.Response] = None
 
     for i in range(retries):
@@ -148,7 +191,14 @@ def request_with_retry(session: requests.Session, url: str, params: Dict[str, An
                 error_payload = json.loads(r.content)
             except Exception:
                 error_payload = r.text
-            raise ValueError({"url": url, "params": params, "error": error_payload})
+            raise ValueError(
+                {
+                    "url": url,
+                    "params": params,
+                    "error": error_payload,
+                }
+            )
+
 
     if last is not None:
         last.raise_for_status()
@@ -158,10 +208,14 @@ def request_with_retry(session: requests.Session, url: str, params: Dict[str, An
 
 def split_list_param(values: List[Any], max_len: int) -> Iterable[List[Any]]:
     for i in range(0, len(values), max_len):
-        yield values[i : i + max_len]
+        yield values[i:i + max_len]
 
 
-def datetime_chunks(start: pd.Timestamp, end: pd.Timestamp, max_days: Optional[int]) -> List[Tuple[pd.Timestamp, pd.Timestamp]]:
+def datetime_chunks(
+    start: pd.Timestamp,
+    end: pd.Timestamp,
+    max_days: Optional[int],
+) -> List[Tuple[pd.Timestamp, pd.Timestamp]]:
     if max_days is None:
         return [(start, end)]
 
@@ -177,7 +231,10 @@ def datetime_chunks(start: pd.Timestamp, end: pd.Timestamp, max_days: Optional[i
     return chunks
 
 
-def get_date_chunk_cols(params: Dict[str, Any], date_chunk_cols: Optional[List[str]] = None) -> List[str]:
+def get_date_chunk_cols(
+    params: Dict[str, Any],
+    date_chunk_cols: Optional[List[str]] = None,
+) -> List[str]:
     if date_chunk_cols:
         return date_chunk_cols
 
@@ -200,13 +257,22 @@ def get_date_chunk_cols(params: Dict[str, Any], date_chunk_cols: Optional[List[s
         return [time_cols[0]]
 
     raise ValueError(
-        f"Multiple possible datetime columns to chunk on: "
-        f"from={from_cols}, to={to_cols}, date={date_cols}, time={time_cols}. "
-        "Please specify date_chunk_cols=[...] explicitly."
+        (
+            "Multiple possible datetime columns to chunk on: "
+            (
+                f"from={from_cols}, to={to_cols}, "
+                f"date={date_cols}, time={time_cols}. "
+            )
+            "Please specify date_chunk_cols=[...] explicitly."
+        )
     )
 
 
-def maybe_tqdm(iterable: Iterable[Any], enabled: bool = True, **kwargs: Any) -> Iterable[Any]:
+def maybe_tqdm(
+    iterable: Iterable[Any],
+    enabled: bool = True,
+    **kwargs: Any,
+) -> Iterable[Any]:
     if not enabled:
         return iterable
     return tqdm(iterable, **kwargs)
@@ -222,7 +288,7 @@ def load_func_array(response: requests.Response) -> List[Dict[str, Any]]:
 
 def return_response(response: requests.Response, format: str) -> Any:
     if format not in ("df", "json"):
-        raise ValueError('format must be one of: format="df" or format="json"')
+        raise ValueError('format must be "df" or "json"')
 
     json_response = json.loads(response.content)
 

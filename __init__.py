@@ -11,6 +11,10 @@ from .download import ElexonClient
 
 # Emit a mild user-facing warning (not a print) to make `_from` usage clear
 import warnings
-warnings.warn("elexonapi: Use `_from` instead of the Python reserved word `from` when supplying date ranges.", stacklevel=2)
+_warn_msg = (
+    "elexonapi: Use `_from` instead of the Python reserved word "
+    "`from` when supplying date ranges."
+)
+warnings.warn(_warn_msg, stacklevel=2)
 
 __all__ = ["datasets", "browse", "help", "ElexonClient"]

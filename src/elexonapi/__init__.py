@@ -9,7 +9,11 @@ from .datasets import datasets, browse, help
 from .download import ElexonClient
 
 import warnings
-warnings.warn("elexonapi: Use `_from` instead of the Python reserved word `from` when supplying date ranges.", stacklevel=2)
+_warn_msg = (
+    "elexonapi: Use `_from` instead of the Python reserved word "
+    "`from` when supplying date ranges."
+)
+warnings.warn(_warn_msg, stacklevel=2)
 
 __version__ = "0.1.2"
 __all__ = ["datasets", "browse", "help", "ElexonClient", "__version__"]
