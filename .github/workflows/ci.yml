@@ -34,5 +34,5 @@ jobs:
         run: |
           uv run ruff check
           uv run mypy .
-          pip install -e .
+          uv pip install -e .
           uv run pytest -q --maxfail=1
