@@ -20,8 +20,8 @@ jobs:
         uses: astral-sh/setup-uv@v1
 
       # Install a Python toolchain via uv (quote the >= operator)
-      - name: Install Python >=3.13 with uv
-        run: uv python install ">=3.13"
+      - name: Install Python >=3.12 with uv
+        run: uv python install ">=3.12"
 
       - name: Install package and dev dependencies
         run: |
