@@ -3,13 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [0.1.4] - 2026-01-13
-
 ### Fixed
 - cleaned up README and corrected examples
 - changed CI / publish workflows to use uv
 - changed linting from flake8 and black to ruff
 - changed dev packages to be contained in .toml and not requirements-dev.txt
 - added *.ipynb to .gitignore for ipynb test files
+- added repo and changelog to pyPI homepage
 
 ## [0.1.3] - 2026-01-11 [versions 0.1.1 and 0.1.2 were non-public]
 ### Fixed
