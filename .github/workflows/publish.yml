@@ -23,7 +23,7 @@ jobs:
 
       - name: Install package and dev dependencies
         run: |
-          uv sync --dev
+          uv sync
 
       - name: Run linters and tests
         run: |
