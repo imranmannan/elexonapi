@@ -62,7 +62,7 @@ Usage:
 # git tag v0.1.1 && git push origin v0.1.1
 
 # then run:
-./scripts/create_release.sh v0.1.1
+./scripts/create_release.sh vX.X.X
 ```
 
 The script will:
