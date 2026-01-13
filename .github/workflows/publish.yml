@@ -42,10 +42,19 @@ jobs:
       contents: write
       packages: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Install uv (tooling manager)
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: '3.12'
+          # Install a specific version of uv.
+          version: "0.9.23"
+
+      # Install a Python toolchain via uv (quote the >= operator)
+      - name: Install Python >=3.12 with uv
+        run: uv python install ">=3.12"
       - name: Build & publish
         env:
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
