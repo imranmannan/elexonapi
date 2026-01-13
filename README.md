@@ -29,17 +29,19 @@ If you need the development version and want to run the package locally, see the
 Import the small API and inspect what datasets are available:
 
 ```py
-import elexonapi
+from elexonapi import ElexonClient
+
+elexon = ElexonClient()
 
 # Pandas DataFrame of available datasets
-print(elexonapi.datasets.head())
+print(elexon.datasets.head())
 
 # Search for a dataset by alias and view help text
-elexonapi.help('BMU - Balancing Mechanism Unit Details')  # name
+elexon.help('BMU - Balancing Mechanism Unit Details')  # name
 # or
-elexonapi.help('BMUDETAILS')  # code
+elexon.help('BMUDETAILS')  # code
 # or
-elexonapi.help('bmuDetailsSeeAll')  # operation id
+elexon.help('bmuDetailsSeeAll')  # operation id
 ```
 
 ### Downloading a single request
