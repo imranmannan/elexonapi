@@ -1,3 +1,4 @@
+
 name: CI
 
 on:
@@ -9,21 +10,30 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install python with uv
+      # Install uv (tooling manager)
+      - name: Setup uv
         uses: astral-sh/setup-uv@v1
-        run: uv python install >=3.11
 
+      # Install a Python toolchain via uv (quote the >= operator)
+      - name: Install Python >=3.11 with uv
+        run: uv python install ">=3.11"
 
+      # If you want a specific CPython for the runner as well (optional):
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: "3.11"
 
       - name: Install package and dev dependencies
         run: |
           uv sync --dev
           uv pip install -e .
+
       - name: Run linters and tests
         run: |
           uv run ruff check
