@@ -19,7 +19,7 @@ def test_get_operation_from_alias():
 
 
 def test_validate_params_missing():
-    from elexonapi.download import validate_params
+    from src.elexonapi.download import validate_params
 
     # craft a minimal dataset metadata with required cols
     ds = {"required_cols": ["a", "b"], "optional_cols": ["c"]}
@@ -28,7 +28,7 @@ def test_validate_params_missing():
 
 
 def test_get_date_chunk_cols():
-    from elexonapi.download import get_date_chunk_cols
+    from src.elexonapi.download import get_date_chunk_cols
 
     # No date keys
     assert get_date_chunk_cols({}) == []
@@ -43,7 +43,7 @@ def test_get_date_chunk_cols():
 
 
 def test_datetime_chunks():
-    from elexonapi.download import datetime_chunks
+    from src.elexonapi.download import datetime_chunks
     import pandas as pd
 
     start = pd.to_datetime("2023-01-01")
