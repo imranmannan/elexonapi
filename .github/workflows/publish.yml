@@ -59,7 +59,7 @@ jobs:
         env:
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          uvx build
+          uvx --from build pyproject-build
           uvx twine upload dist/* -u __token__ -p "$TWINE_PASSWORD"
 
       - name: Create GitHub Release and attach artifacts
