@@ -59,9 +59,8 @@ jobs:
         env:
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          uv add pip build twine
-          uv run build
-          uv run twine upload dist/* -u __token__ -p "$TWINE_PASSWORD"
+          uvx build
+          uvx twine upload dist/* -u __token__ -p "$TWINE_PASSWORD"
 
       - name: Create GitHub Release and attach artifacts
         uses: softprops/action-gh-release@v1
