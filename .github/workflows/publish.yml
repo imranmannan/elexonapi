@@ -10,16 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - name: Install package and dev dependencies with uv
-        run: |
-          uv sync --dev
-          uv pip install -e .
-      - name: Run tests
-        run: |
-          uv run pytest -q
+
+      - name: Install python with uv
+        uses: astral-sh/setup-uv@v1
+        run: uv python install >=3.11
 
   publish:
     needs: test
