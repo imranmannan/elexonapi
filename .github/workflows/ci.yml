@@ -26,7 +26,6 @@ jobs:
       - name: Install package and dev dependencies
         run: |
           uv sync --dev
-          uv pip install -e .
 
       - name: Run linters and tests
         run: |

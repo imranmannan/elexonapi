@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from elexonapi.download import ElexonClient
+from src.elexonapi.download import ElexonClient
 
 
 def test_client_has_datasets():
