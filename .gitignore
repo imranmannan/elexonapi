@@ -11,3 +11,6 @@ wheels/
 
 # yaml file - for legibile version of API spec
 src/elexonapi/prod-insol-insights-api.yaml
+
+# .ipynb for testing
+*.ipynb

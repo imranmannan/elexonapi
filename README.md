@@ -1,8 +1,9 @@
 
 # elexonapi ⚡️
 
-A compact, well-documented Python wrapper for the Elexon Insights API that
-makes downloading and working with Elexon datasets easy and legible.
+A compact Python wrapper for the Elexon Insights API that
+lets you download years of data at a time and 
+use human-readable table names.  
 
 Key differentiators:
 - **Insights API (not BMRS)** — This package targets the newer Elexon *Insights* OpenAPI spec and endpoints.
@@ -33,15 +34,18 @@ from elexonapi import ElexonClient
 
 elexon = ElexonClient()
 
+# Browse all Elexon datasets interactively
+elexon.browse()
+
 # Pandas DataFrame of available datasets
 print(elexon.datasets.head())
 
 # Search for a dataset by alias and view help text
-elexon.help('BMU - Balancing Mechanism Unit Details')  # name
+elexon.help('Initial Transmission System Demand outturn')  # name
 # or
-elexon.help('BMUDETAILS')  # code
+elexon.help('ITSDO')  # code
 # or
-elexon.help('bmuDetailsSeeAll')  # operation id
+elexon.help('get-datasets-itsdo')  # operation id
 ```
 
 ### Downloading a single request
@@ -49,10 +53,10 @@ elexon.help('bmuDetailsSeeAll')  # operation id
 ```py
 # Return a pandas DataFrame (format="df") when supported
 elexon = elexonapi.ElexonClient()
-df = elexon.download('BMUDETAILS', market='BM')
+df = elexon.download('ITSDO',publishDateTimeFrom='2025-01-06',publishDateTimeTo='2025-04-06')
 
 # Or get raw JSON
-j = elexon.download('BMUDETAILS', format='json', market='BM')
+df = elexon.download('ITSDO',publishDateTimeFrom='2025-01-06',publishDateTimeTo='2025-04-06', format='json')
 ```
 
 ### Downloading historical data (automatic chunking)
@@ -63,24 +67,24 @@ If an endpoint accepts a `from` and `to` range (or a single `date` / `time` colu
 # Use `_from` to avoid the reserved Python word `from` in keywords
 # The wrapper will chunk the range and return a single DataFrame
 elexon = elexonapi.ElexonClient()
-df = elexon.download('BMUDETAILS', _from='2023-01-01', to='2023-06-30')
+df = elexon.download('Minimum Zero Time', _from='2023-01-01', to='2023-01-30')
 
 # Or iterate single dates
-dates = pd.date_range('2024-01-01', '2024-01-07')
-weekly = elexonapi.download('SOME_DAILY_ENDPOINT', date=dates)
+dates = pd.date_range('2024-01-01', '2024-02-01')
+df = elexon.download('Total Exempt Supply Volume', settlementDate=dates)
 ```
 
 ### Examples showing alias flexibility
 
 ```py
 # Query by human-friendly name
-elexonapi.download('Balancing Mechanism Unit Details', _from='2024-01-01', to='2024-01-10')
+df = elexon.download('Initial Transmission System Demand outturn',publishDateTimeFrom='2025-01-06',publishDateTimeTo='2025-04-06')
 
 # Query by code
-elexonapi.download('BMUDETAILS', _from='2024-01-01', to='2024-01-10')
+df = elexon.download('ITSDO',publishDateTimeFrom='2025-01-06',publishDateTimeTo='2025-04-06')
 
 # Query by operation id
-elexonapi.download('bmuDetailsSeeAll', _from='2024-01-01', to='2024-01-10')
+df = elexon.download('get-datasets-itsdo',publishDateTimeFrom='2025-01-06',publishDateTimeTo='2025-04-06')
 ```
 
 ### Helpful error messages
@@ -134,17 +138,13 @@ If you want to run the project locally (tests, linting, or editable installs) us
 
 ```bash
 # add development tooling
-uv add --dev pytest mypy flake8
+uv sync --dev
 
-# sync/install into the active virtual environment
-uv sync --active
-
-# If you prefer pip to install the current project in editable mode
-# (useful if you have an editable layout), run:
+# Install the current project in editable mode
 uv pip install -e .
 
 # run tests
-pytest -q
+uv run pytest -q
 ```
 
 > Note: The project is published on PyPI and the recommended install for users is via `pip install elexonapi`.
