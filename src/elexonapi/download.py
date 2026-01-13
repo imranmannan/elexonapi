@@ -167,10 +167,7 @@ def validate_params(dataset: Dict[str, Any], params: Dict[str, Any]) -> None:
     if missing:
         raise ValueError(f"Missing required parameters: {sorted(missing)}")
     if extra:
-        raise ValueError(
-            ("Unknown parameters: %r. Allowed inputs are: %r")
-            % (sorted(extra), sorted(allowed))
-        )
+        raise ValueError(f"Unknown parameters:{sorted(extra)}. Allowed inputs are: {sorted(allowed)} for dataset {(dataset['operation'],dataset['code'],dataset['name'])}")
 
 
 def request_with_retry(

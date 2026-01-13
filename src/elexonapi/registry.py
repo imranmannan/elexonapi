@@ -42,10 +42,16 @@ def build_registry(openapi_path: Path | str) -> List[Dict[str, Any]]:
         max_days = extract_max_days(get.get("description", ""))
 
         operation = get.get("operationId", "")
-
+        
+        # if no code or code repeated, set to operation
         if not code or code in [d["code"] for d in datasets]:
             code = operation
+        
+        # if no name or name repeated, set to operation
+        if not name or name in [d["name"] for d in datasets]:
+            name = operation
 
+        # replace commas with underscores
         code = re.sub(r"\s*,\s*", "_", code)
 
         example_response = extract_response_structure(get.get("responses", {}))
