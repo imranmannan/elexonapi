@@ -33,5 +33,5 @@ jobs:
       - name: Run linters and tests
         run: |
           uv run ruff check
-          uv run mypy . --explicit-package-bases
+          uv run mypy .
           uv run pytest -q --maxfail=1
